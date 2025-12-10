@@ -1,0 +1,6 @@
+fastapi[standard]
+torch
+torchvision
+timm
+python-multipart
+pillow
