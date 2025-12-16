@@ -14,7 +14,13 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Pastikan file `best_model.pth` ada di direktori root.
+### Download Model
+
+Karena ukuran file model cukup besar, file tidak disertakan dalam repository ini. Silakan download model `best_model.pth` dari link berikut:
+
+🔗 [Download Model (Google Drive)](https://drive.google.com/file/d/1vlqFXPIVLa4TkZ00S4s47HGqXFOxg3uX/view?usp=sharing)
+
+Setelah didownload, letakkan file `best_model.pth` di **root directory** proyek (sejajar dengan `main.py`).
 
 ## Menjalankan API
 
@@ -44,15 +50,27 @@ Upload gambar untuk prediksi jenis kopi.
 
 **Response:**
 
+Mengembalikan 10 prediksi teratas yang diurutkan berdasarkan index kelas.
+
 ```json
 {
   "predictions": [
     {
       "class_name": "Arabika Aceh Gayo",
-      "confidence": 95.32,
+      "confidence": 0.19,
       "index": 0
     },
+    {
+      "class_name": "Arabika Enrekang",
+      "confidence": 0.66,
+      "index": 7
+    },
     ...
+    {
+      "class_name": "Arabika Lintong",
+      "confidence": 63.98,
+      "index": 18
+    }
   ]
 }
 ```
@@ -101,7 +119,7 @@ Edit di `main.py`:
 
 - `MODEL_PATH`: Path ke model file
 - `MAX_FILE_SIZE`: Ukuran file maksimal (2 MB)
-- `NUM_CLASSES`: Jumlah kelas (54)  
+- `NUM_CLASSES`: Jumlah kelas (54)
 
 ## Troubleshooting
 
