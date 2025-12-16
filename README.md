@@ -46,9 +46,14 @@ Upload gambar untuk prediksi jenis kopi.
 
 ```json
 {
-  "class_name": "Arabika Aceh Gayo",
-  "confidence": 95.32,
-  "index": 0
+  "predictions": [
+    {
+      "class_name": "Arabika Aceh Gayo",
+      "confidence": 95.32,
+      "index": 0
+    },
+    ...
+  ]
 }
 ```
 
@@ -96,7 +101,7 @@ Edit di `main.py`:
 
 - `MODEL_PATH`: Path ke model file
 - `MAX_FILE_SIZE`: Ukuran file maksimal (2 MB)
-- `NUM_CLASSES`: Jumlah kelas (54)
+- `NUM_CLASSES`: Jumlah kelas (54)  
 
 ## Troubleshooting
 

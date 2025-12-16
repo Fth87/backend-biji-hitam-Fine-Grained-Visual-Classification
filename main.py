@@ -92,9 +92,13 @@ async def root():
             "content": {
                 "application/json": {
                     "example": {
-                        "class_name": "Arabika Aceh Gayo",
-                        "confidence": 95.32,
-                        "index": 0
+                        "predictions": [
+                            {
+                                "class_name": "Arabika Aceh Gayo",
+                                "confidence": 95.32,
+                                "index": 0
+                            }
+                        ]
                     }
                 }
             },
@@ -112,12 +116,10 @@ async def predict(
     Memprediksi jenis biji kopi dari gambar yang diunggah.
     
     **Parameter:**
-    - **file**: File gambar dalam format image/* (maksimal 10MB)
+    - **file**: File gambar dalam format image/* (maksimal 2MB)
     
     **Return:**
-    - **class_name**: Nama jenis biji kopi yang diprediksi
-    - **confidence**: Tingkat kepercayaan prediksi dalam persen (0-100)
-    - **index**: Index dari kelas yang diprediksi (0-53)
+    - **predictions**: List 10 prediksi teratas dengan confidence score tertinggi
     
     **Total Kelas Kopi:**
     - Arabika: 37 varian
@@ -127,9 +129,14 @@ async def predict(
     **Contoh Response:**
     ```json
     {
-        "class_name": "Arabika Aceh Gayo",
-        "confidence": 95.32,
-        "index": 0
+        "predictions": [
+            {
+                "class_name": "Arabika Aceh Gayo",
+                "confidence": 95.32,
+                "index": 0
+            },
+            ...
+        ]
     }
     ```
     """
@@ -152,14 +159,19 @@ async def predict(
         with torch.no_grad():
             outputs = model(input_tensor)
             probs = F.softmax(outputs, dim=1)
-            top_prob, top_idx = torch.max(probs, 1)
+            top_probs, top_idxs = torch.topk(probs, 10)
 
-        idx = top_idx.item()
-        return {
-            "class_name": CLASS_NAMES[idx] if idx < len(CLASS_NAMES) else str(idx),
-            "confidence": round(top_prob.item() * 100, 2),
-            "index": idx
-        }
+        results = []
+        for i in range(10):
+            idx = top_idxs[0][i].item()
+            prob = top_probs[0][i].item()
+            results.append({
+                "class_name": CLASS_NAMES[idx] if idx < len(CLASS_NAMES) else str(idx),
+                "confidence": round(prob * 100, 2),
+                "index": idx
+            })
+
+        return {"predictions": results}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
